@@ -48,8 +48,11 @@ docker_home ?= .docker
 # Where to save the container id 
 container_id_file ?= $(docker_home)/container_id
 # Set the work directory for the container
-#container_workdir ?= 
+container_workdir ?= 
 # The network 
+container_network ?=
+# Chance entrypoint
+container_entrypoint_override ?=
 
 ########################################
 # Setting up work areax                #
@@ -66,7 +69,22 @@ ifeq ($(container_workdir),)
 else
 	workdir := --workdir=$(container_workdir)
 endif
-options = $(display) # $(workdir)
+
+ifeq ($(container_network),)
+	network := 
+else
+	workdir := --net=$(container_network)
+endif
+
+
+ifeq ($(container_entrypoint_override),)
+	entrypoint := 
+else
+	entrypoint := --entrypoint=$(container_network)
+endif
+
+
+options = $(display) $(network) $(workdir) 
 
 
 image_file = $(docker_home)/$(image)_$(tag).image
